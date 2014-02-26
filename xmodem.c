@@ -46,6 +46,7 @@
 
 #define DLY_1S 1000
 #define MAXRETRANS 25
+#define TRANSMIT_XMODEM_1K
 
 static int check(int crc, const unsigned char *buf, int sz)
 {
@@ -195,7 +196,11 @@ int xmodemTransmit(unsigned char *src, int srcsz)
 
 		for(;;) {
 		start_trans:
+#ifdef TRANSMIT_XMODEM_1K
+			xbuff[0] = STX; bufsz = 1024;
+#else
 			xbuff[0] = SOH; bufsz = 128;
+#endif
 			xbuff[1] = packetno;
 			xbuff[2] = ~packetno;
 			c = srcsz - len;
